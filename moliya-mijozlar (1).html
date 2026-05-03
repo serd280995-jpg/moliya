@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0f2027">
+<title>Moliya & Mijozlar</title>
+<link rel="manifest" href="manifest.json">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg: #0f2027;
+  --bg2: #1a2f3a;
+  --bg3: #223344;
+  --card: #1e2d3d;
+  --card2: #263545;
+  --accent: #00c9a7;
+  --accent2: #0099ff;
+  --danger: #ff5757;
+  --warn: #ffb347;
+  --text: #e8f4f8;
+  --text2: #8aaabb;
+  --text3: #5a7a8a;
+  --green: #00c9a7;
+  --red: #ff5757;
+  --blue: #4fc3f7;
+  --amber: #ffb347;
+  --purple: #a78bfa;
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  max-width: 430px;
+  margin: 0 auto;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* NAV */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  background: var(--bg2);
+  border-top: 1px solid rgba(255,255,255,0.07);
+  display: flex;
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 10px 4px 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text3);
+  font-family: 'Nunito', sans-serif;
+  font-size: 10px;
+  transition: color 0.2s;
+}
+.nav-btn.active { color: var(--accent); }
+.nav-btn svg { width: 22px; height: 22px; }
+
+.page { display: none; padding: 0 0 80px; }
+.page.active { display: block; }
+
+/* HEADER */
+.header {
+  background: linear-gradient(135deg, #0f2027 0%, #1a3a4a 100%);
+  padding: 50px 20px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 150px; height: 150px;
+  border-radius: 50%;
+  background: rgba(0,201,167,0.08);
+}
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: -20px; left: 20px;
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: rgba(0,153,255,0.06);
+}
+.header-label { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
+.header-balance { font-size: 28px; font-weight: 800; margin-bottom: 14px; }
+.header-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip {
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.chip-g { background: rgba(0,201,167,0.15); color: #00c9a7; }
+.chip-r { background: rgba(255,87,87,0.15); color: #ff7b7b; }
+.chip-b { background: rgba(79,195,247,0.15); color: #4fc3f7; }
+
+/* CARDS */
+.section { padding: 16px 16px 0; }
+.section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 14px;
+  border: 1px solid rgba(255,255,255,0.05);
+  margin-bottom: 10px;
+}
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.stat-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.stat-label { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
+.stat-value { font-size: 17px; font-weight: 700; }
+
+/* DONUT */
+.donut-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 14px;
+  border: 1px solid rgba(255,255,255,0.05);
+  margin-bottom: 10px;
+}
+.legend { flex: 1; }
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.legend-pct { margin-left: auto; font-weight: 700; color: var(--text2); }
+
+/* DEBT ITEM */
+.debt-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+.debt-name { font-size: 14px; font-weight: 600; }
+.debt-date { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.debt-right { text-align: right; }
+.debt-tag {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-bottom: 3px;
+  display: inline-block;
+}
+.tag-r { background: rgba(255,87,87,0.15); color: #ff7b7b; }
+.tag-g { background: rgba(0,201,167,0.15); color: #00c9a7; }
+.debt-amount { font-size: 15px; font-weight: 700; }
+
+/* EXPENSE ITEM */
+.exp-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  margin-bottom: 7px;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+.exp-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 16px;
+}
+.exp-info { flex: 1; min-width: 0; }
+.exp-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.exp-meta { display: flex; gap: 5px; margin-top: 3px; align-items: center; }
+.exp-date { font-size: 11px; color: var(--text3); }
+.badge {
+  font-size: 10px;
+  padding: 1px 7px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+.badge-plan { background: rgba(79,195,247,0.15); color: #4fc3f7; }
+.badge-unplan { background: rgba(255,179,71,0.15); color: #ffb347; }
+.badge-cash { background: rgba(0,201,167,0.12); color: #00c9a7; }
+.badge-card { background: rgba(167,139,250,0.15); color: #a78bfa; }
+.exp-amount { font-size: 14px; font-weight: 700; color: var(--red); white-space: nowrap; }
+
+/* CLIENT ITEM */
+.client-item {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 13px 14px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.client-top { display: flex; align-items: flex-start; gap: 10px; }
+.avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--bg3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  flex-shrink: 0;
+  border: 1.5px solid rgba(0,201,167,0.3);
+}
+.client-info { flex: 1; min-width: 0; }
+.client-name { font-size: 14px; font-weight: 700; }
+.client-phone { font-size: 12px; color: var(--blue); margin-top: 2px; }
+.client-right { text-align: right; flex-shrink: 0; }
+.client-date { font-size: 10px; color: var(--text3); }
+.status-badge {
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 8px;
+  font-weight: 700;
+  margin-top: 4px;
+  display: inline-block;
+}
+.s-new { background: rgba(79,195,247,0.15); color: #4fc3f7; }
+.s-way { background: rgba(255,179,71,0.15); color: #ffb347; }
+.s-done { background: rgba(0,201,167,0.15); color: #00c9a7; }
+.client-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 7px; }
+.ctag {
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+.ct-work { background: rgba(0,201,167,0.12); color: #00c9a7; }
+.ct-call { background: rgba(255,179,71,0.1); color: #ffb347; }
+.ct-arrive { background: rgba(79,195,247,0.1); color: #4fc3f7; }
+.client-sum { font-size: 15px; font-weight: 800; color: var(--accent); margin-top: 6px; }
+
+/* MODAL / FORM */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 200;
+  align-items: flex-end;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--bg2);
+  border-radius: 20px 20px 0 0;
+  padding: 20px 20px 40px;
+  width: 100%;
+  max-width: 430px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.modal-title {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modal-close {
+  background: var(--bg3);
+  border: none;
+  color: var(--text2);
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.form-group { margin-bottom: 13px; }
+.form-label { font-size: 12px; color: var(--text2); margin-bottom: 5px; font-weight: 600; }
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  padding: 10px 12px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--accent);
+}
+.form-select option { background: var(--bg2); }
+.form-textarea { resize: vertical; min-height: 60px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.btn-primary {
+  width: 100%;
+  background: var(--accent);
+  color: #0f2027;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 13px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  margin-top: 6px;
+  transition: opacity 0.2s;
+}
+.btn-primary:active { opacity: 0.8; }
+.toggle-row { display: flex; gap: 8px; }
+.toggle-btn {
+  flex: 1;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,255,255,0.1);
+  background: transparent;
+  color: var(--text2);
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.toggle-btn.active { background: var(--accent); color: #0f2027; border-color: var(--accent); }
+
+/* FAB */
+.fab {
+  position: fixed;
+  bottom: 75px;
+  right: 20px;
+  width: 52px; height: 52px;
+  background: var(--accent);
+  border: none;
+  border-radius: 50%;
+  color: #0f2027;
+  font-size: 26px;
+  cursor: pointer;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(0,201,167,0.4);
+  transition: transform 0.2s;
+}
+.fab:active { transform: scale(0.93); }
+
+/* REMINDER BANNER */
+.reminder {
+  background: rgba(255,179,71,0.12);
+  border: 1px solid rgba(255,179,71,0.25);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--amber);
+  font-weight: 600;
+}
+
+/* EMPTY STATE */
+.empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text3);
+}
+.empty-icon { font-size: 40px; margin-bottom: 10px; }
+.empty-text { font-size: 14px; }
+
+/* TABS */
+.tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+.tab-btn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: transparent;
+  color: var(--text2);
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tab-btn.active { background: var(--accent); color: #0f2027; border-color: var(--accent); }
+
+/* SETTINGS */
+.settings-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  margin-bottom: 8px;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+.settings-label { font-size: 14px; font-weight: 600; }
+.settings-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.settings-val { font-size: 14px; font-weight: 700; color: var(--accent); }
+
+.divider { height: 1px; background: rgba(255,255,255,0.06); margin: 16px 0; }
+
+/* Chart bars */
+.bar-chart { display: flex; align-items: flex-end; gap: 6px; height: 80px; padding: 0 4px; }
+.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.bar-fill { width: 100%; border-radius: 4px 4px 0 0; transition: height 0.3s; }
+.bar-lbl { font-size: 9px; color: var(--text3); }
+
+.sum-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.sum-key { font-size: 13px; color: var(--text2); }
+.sum-val { font-size: 13px; font-weight: 700; }
+
+.delete-btn {
+  background: rgba(255,87,87,0.12);
+  border: none;
+  color: #ff5757;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+}
+
+.income-amount { font-size: 14px; font-weight: 700; color: var(--green); }
+</style>
+</head>
+<body>
+
+<!-- PAGE: HOME -->
+<div id="page-home" class="page active">
+  <div class="header">
+    <div class="header-label" id="home-period">Май 2026 · Баланс</div>
+    <div class="header-balance" id="home-balance">0 сум</div>
+    <div class="header-chips">
+      <div class="chip chip-g">↑ <span id="home-income">0</span></div>
+      <div class="chip chip-r">↓ <span id="home-expense">0</span></div>
+    </div>
+  </div>
+
+  <div id="reminder-zone" style="padding: 12px 16px 0;"></div>
+
+  <div class="section">
+    <div class="section-title">Расходы месяца</div>
+    <div class="donut-wrap">
+      <svg width="90" height="90" viewBox="0 0 90 90" id="donut-svg">
+        <circle cx="45" cy="45" r="35" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="13"/>
+        <text x="45" y="41" text-anchor="middle" font-size="11" fill="#e8f4f8" font-weight="700" font-family="Nunito">-</text>
+        <text x="45" y="53" text-anchor="middle" font-size="9" fill="#8aaabb" font-family="Nunito">сум</text>
+      </svg>
+      <div class="legend" id="donut-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#00c9a7"></div>Нет данных</div>
+      </div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-label">Мне должны</div><div class="stat-value" style="color:var(--green)" id="stat-owed">0 сум</div></div>
+      <div class="stat-card"><div class="stat-label">Я должен</div><div class="stat-value" style="color:var(--red)" id="stat-iowe">0 сум</div></div>
+      <div class="stat-card"><div class="stat-label">Запланировано</div><div class="stat-value" style="color:var(--blue)" id="stat-planned">0 сум</div></div>
+      <div class="stat-card"><div class="stat-label">Внеплановые</div><div class="stat-value" style="color:var(--amber)" id="stat-unplanned">0 сум</div></div>
+    </div>
+
+    <div class="section-title">Последние операции</div>
+    <div id="recent-list"><div class="empty"><div class="empty-icon">📊</div><div class="empty-text">Нет операций. Нажмите + чтобы добавить</div></div></div>
+  </div>
+</div>
+
+<!-- PAGE: DEBTS -->
+<div id="page-debts" class="page">
+  <div class="header">
+    <div class="header-label">Долги</div>
+    <div class="header-balance" style="font-size:20px">Кто кому должен</div>
+    <div class="header-chips">
+      <div class="chip chip-g">Мне: <span id="debts-owed-total">0</span> сум</div>
+      <div class="chip chip-r">Я: <span id="debts-iowe-total">0</span> сум</div>
+    </div>
+  </div>
+  <div class="section">
+    <div id="debts-list"><div class="empty"><div class="empty-icon">🤝</div><div class="empty-text">Нет долгов</div></div></div>
+  </div>
+</div>
+
+<!-- PAGE: EXPENSES -->
+<div id="page-expenses" class="page">
+  <div class="header">
+    <div class="header-label">Доходы и расходы</div>
+    <div class="header-balance" style="font-size:20px" id="exp-page-total">0 сум</div>
+  </div>
+  <div class="section">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="filterExp('all',this)">Все</button>
+      <button class="tab-btn" onclick="filterExp('income',this)">Доходы</button>
+      <button class="tab-btn" onclick="filterExp('planned',this)">Плановые</button>
+      <button class="tab-btn" onclick="filterExp('unplanned',this)">Внеплановые</button>
+    </div>
+    <div id="exp-list"><div class="empty"><div class="empty-icon">💳</div><div class="empty-text">Нет операций</div></div></div>
+  </div>
+</div>
+
+<!-- PAGE: CLIENTS -->
+<div id="page-clients" class="page">
+  <div class="header" style="background: linear-gradient(135deg, #0f2027 0%, #1a3a2e 100%);">
+    <div class="header-label">Журнал клиентов · сантехника</div>
+    <div class="header-balance" style="font-size:20px">Заявок: <span id="clients-count">0</span></div>
+    <div class="header-chips">
+      <div class="chip chip-g">Выполнено: <span id="clients-done">0</span></div>
+      <div class="chip chip-b">Выручка: <span id="clients-revenue">0</span> сум</div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="filterClients('all',this)">Все</button>
+      <button class="tab-btn" onclick="filterClients('new',this)">Новые</button>
+      <button class="tab-btn" onclick="filterClients('way',this)">В пути</button>
+      <button class="tab-btn" onclick="filterClients('done',this)">Выполнено</button>
+    </div>
+    <div id="clients-list"><div class="empty"><div class="empty-icon">🔧</div><div class="empty-text">Нет клиентов. Нажмите + чтобы добавить</div></div></div>
+  </div>
+</div>
+
+<!-- PAGE: SETTINGS -->
+<div id="page-settings" class="page">
+  <div class="header">
+    <div class="header-label">Профиль и настройки</div>
+    <div class="header-balance" style="font-size:20px">Мои данные</div>
+  </div>
+  <div class="section">
+    <div class="section-title">Статистика</div>
+    <div class="settings-item">
+      <div><div class="settings-label">Всего операций</div><div class="settings-sub">доходы + расходы</div></div>
+      <div class="settings-val" id="stats-ops">0</div>
+    </div>
+    <div class="settings-item">
+      <div><div class="settings-label">Клиентов в журнале</div></div>
+      <div class="settings-val" id="stats-clients">0</div>
+    </div>
+    <div class="settings-item">
+      <div><div class="settings-label">Активных долгов</div></div>
+      <div class="settings-val" id="stats-debts">0</div>
+    </div>
+    <div class="divider"></div>
+    <div class="section-title">График по месяцам</div>
+    <div class="card">
+      <div class="bar-chart" id="monthly-chart"></div>
+      <div style="display:flex;gap:12px;margin-top:8px;justify-content:center">
+        <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2)"><div style="width:10px;height:10px;border-radius:2px;background:var(--green)"></div>Доход</div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2)"><div style="width:10px;height:10px;border-radius:2px;background:var(--red)"></div>Расход</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="section-title">Управление данными</div>
+    <button class="btn-primary" style="background:rgba(255,87,87,0.15);color:#ff5757;margin-bottom:10px;" onclick="if(confirm('Удалить все данные?')){localStorage.clear();location.reload()}">Очистить все данные</button>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" onclick="showPage('home',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Главная
+  </button>
+  <button class="nav-btn" onclick="showPage('debts',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+    Долги
+  </button>
+  <button class="nav-btn" onclick="showPage('expenses',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    Финансы
+  </button>
+  <button class="nav-btn" onclick="showPage('clients',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+    Клиенты
+  </button>
+  <button class="nav-btn" onclick="showPage('settings',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+    Настройки
+  </button>
+</nav>
+
+<!-- FAB -->
+<button class="fab" id="fab-btn" onclick="openAddModal()">+</button>
+
+<!-- MODAL: ADD OPERATION -->
+<div class="modal-overlay" id="modal-add">
+  <div class="modal">
+    <div class="modal-title">
+      <span id="modal-title-text">Добавить</span>
+      <button class="modal-close" onclick="closeModal('modal-add')">✕</button>
+    </div>
+
+    <!-- TYPE SELECTOR -->
+    <div class="form-group">
+      <div class="form-label">Тип записи</div>
+      <div class="toggle-row">
+        <button class="toggle-btn active" onclick="setModalType('expense',this)">Расход</button>
+        <button class="toggle-btn" onclick="setModalType('income',this)">Доход</button>
+        <button class="toggle-btn" onclick="setModalType('debt',this)">Долг</button>
+        <button class="toggle-btn" onclick="setModalType('client',this)">Клиент</button>
+      </div>
+    </div>
+
+    <!-- EXPENSE / INCOME FIELDS -->
+    <div id="fields-expense">
+      <div class="form-group">
+        <div class="form-label">Сумма (сум)</div>
+        <input class="form-input" type="number" id="exp-amount" placeholder="100 000">
+      </div>
+      <div class="form-group">
+        <div class="form-label">Категория</div>
+        <select class="form-select" id="exp-category">
+          <option>Продукты</option>
+          <option>Транспорт</option>
+          <option>Коммунальные</option>
+          <option>Развлечения</option>
+          <option>Одежда</option>
+          <option>Здоровье</option>
+          <option>Образование</option>
+          <option>Ресторан</option>
+          <option>Прочее</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Вид расхода</div>
+        <div class="toggle-row">
+          <button class="toggle-btn active" id="exp-type-plan" onclick="setExpType('planned',this)">Плановый</button>
+          <button class="toggle-btn" id="exp-type-unplan" onclick="setExpType('unplanned',this)">Внеплановый</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Способ оплаты</div>
+        <div class="toggle-row">
+          <button class="toggle-btn active" id="pay-cash" onclick="setPayType('cash',this)">Наличные</button>
+          <button class="toggle-btn" id="pay-card" onclick="setPayType('card',this)">Пластик</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Дата</div>
+        <input class="form-input" type="date" id="exp-date">
+      </div>
+      <div class="form-group">
+        <div class="form-label">Описание (необязательно)</div>
+        <input class="form-input" type="text" id="exp-desc" placeholder="Комментарий...">
+      </div>
+    </div>
+
+    <!-- DEBT FIELDS -->
+    <div id="fields-debt" style="display:none">
+      <div class="form-group">
+        <div class="form-label">Кто / кому</div>
+        <div class="toggle-row">
+          <button class="toggle-btn active" id="debt-dir-owe" onclick="setDebtDir('iowe',this)">Я должен</button>
+          <button class="toggle-btn" id="debt-dir-owed" onclick="setDebtDir('owed',this)">Мне должны</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Имя</div>
+        <input class="form-input" type="text" id="debt-name" placeholder="Алишер...">
+      </div>
+      <div class="form-group">
+        <div class="form-label">Сумма (сум)</div>
+        <input class="form-input" type="number" id="debt-amount" placeholder="200 000">
+      </div>
+      <div class="form-group">
+        <div class="form-label">Срок возврата</div>
+        <input class="form-input" type="date" id="debt-due">
+      </div>
+      <div class="form-group">
+        <div class="form-label">Примечание</div>
+        <input class="form-input" type="text" id="debt-note" placeholder="Займ на...">
+      </div>
+    </div>
+
+    <!-- CLIENT FIELDS -->
+    <div id="fields-client" style="display:none">
+      <div class="form-group">
+        <div class="form-label">Имя клиента</div>
+        <input class="form-input" type="text" id="cl-name" placeholder="Анвар Назаров">
+      </div>
+      <div class="form-group">
+        <div class="form-label">Номер телефона</div>
+        <input class="form-input" type="tel" id="cl-phone" placeholder="+998 90 123 45 67">
+      </div>
+      <div class="form-group">
+        <div class="form-label">Вид работы</div>
+        <select class="form-select" id="cl-work">
+          <option>Замена трубы</option>
+          <option>Течь — ремонт</option>
+          <option>Унитаз — замена/ремонт</option>
+          <option>Смеситель — замена</option>
+          <option>Водонагреватель</option>
+          <option>Счётчик воды</option>
+          <option>Канализация</option>
+          <option>Разводка труб</option>
+          <option>Другое</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Описание работы</div>
+        <input class="form-input" type="text" id="cl-work-desc" placeholder="Подробности...">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <div class="form-label">Дата звонка</div>
+          <input class="form-input" type="date" id="cl-call-date">
+        </div>
+        <div class="form-group">
+          <div class="form-label">Время звонка</div>
+          <input class="form-input" type="time" id="cl-call-time">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <div class="form-label">Дата прибытия</div>
+          <input class="form-input" type="date" id="cl-arrive-date">
+        </div>
+        <div class="form-group">
+          <div class="form-label">Время прибытия</div>
+          <input class="form-input" type="time" id="cl-arrive-time">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Названная сумма (сум)</div>
+        <input class="form-input" type="number" id="cl-sum" placeholder="500 000">
+      </div>
+      <div class="form-group">
+        <div class="form-label">Адрес</div>
+        <input class="form-input" type="text" id="cl-address" placeholder="Улица, дом...">
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="saveRecord()">Сохранить</button>
+  </div>
+</div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────
+let currentPage = 'home';
+let modalType = 'expense';
+let expType = 'planned';
+let payType = 'cash';
+let debtDir = 'iowe';
+let clientFilter = 'all';
+let expFilter = 'all';
+
+function getData(key) {
+  try { return JSON.parse(localStorage.getItem(key)) || []; } catch { return []; }
+}
+function setData(key, val) {
+  localStorage.setItem(key, JSON.stringify(val));
+}
+
+// ─── NAV ─────────────────────────────────────────────────
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
+  currentPage = id;
+  document.getElementById('fab-btn').style.display = (id === 'settings') ? 'none' : 'flex';
+  renderPage(id);
+}
+
+function renderPage(id) {
+  if (id === 'home') renderHome();
+  else if (id === 'debts') renderDebts();
+  else if (id === 'expenses') renderExpenses();
+  else if (id === 'clients') renderClients();
+  else if (id === 'settings') renderSettings();
+}
+
+// ─── MODAL ───────────────────────────────────────────────
+function openAddModal() {
+  if (currentPage === 'clients') setModalType('client', document.querySelectorAll('.toggle-btn')[3]);
+  else setModalType('expense', document.querySelectorAll('.toggle-btn')[0]);
+  document.getElementById('modal-add').classList.add('open');
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('exp-date').value = today;
+  document.getElementById('debt-due').value = today;
+  document.getElementById('cl-call-date').value = today;
+  document.getElementById('cl-arrive-date').value = today;
+  const now = new Date().toTimeString().slice(0,5);
+  document.getElementById('cl-call-time').value = now;
+  document.getElementById('cl-arrive-time').value = now;
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  clearForm();
+}
+function clearForm() {
+  ['exp-amount','exp-desc','debt-name','debt-amount','debt-note',
+   'cl-name','cl-phone','cl-work-desc','cl-sum','cl-address'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+}
+
+function setModalType(type, btn) {
+  modalType = type;
+  document.querySelectorAll('#modal-add .toggle-btn').slice(0,4).forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  ['fields-expense','fields-debt','fields-client'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+  if (type === 'expense' || type === 'income') document.getElementById('fields-expense').style.display = 'block';
+  else if (type === 'debt') document.getElementById('fields-debt').style.display = 'block';
+  else if (type === 'client') document.getElementById('fields-client').style.display = 'block';
+}
+
+function setExpType(t, btn) {
+  expType = t;
+  document.getElementById('exp-type-plan').classList.toggle('active', t === 'planned');
+  document.getElementById('exp-type-unplan').classList.toggle('active', t === 'unplanned');
+}
+function setPayType(t, btn) {
+  payType = t;
+  document.getElementById('pay-cash').classList.toggle('active', t === 'cash');
+  document.getElementById('pay-card').classList.toggle('active', t === 'card');
+}
+function setDebtDir(t, btn) {
+  debtDir = t;
+  document.getElementById('debt-dir-owe').classList.toggle('active', t === 'iowe');
+  document.getElementById('debt-dir-owed').classList.toggle('active', t === 'owed');
+}
+
+// ─── SAVE ─────────────────────────────────────────────────
+function saveRecord() {
+  if (modalType === 'expense' || modalType === 'income') {
+    const amt = parseFloat(document.getElementById('exp-amount').value);
+    if (!amt || amt <= 0) { alert('Введите сумму'); return; }
+    const ops = getData('operations');
+    ops.push({
+      id: Date.now(),
+      type: modalType,
+      expType: modalType === 'expense' ? expType : 'income',
+      payType,
+      amount: amt,
+      category: document.getElementById('exp-category').value,
+      date: document.getElementById('exp-date').value,
+      desc: document.getElementById('exp-desc').value,
+    });
+    setData('operations', ops);
+  } else if (modalType === 'debt') {
+    const name = document.getElementById('debt-name').value.trim();
+    const amt = parseFloat(document.getElementById('debt-amount').value);
+    if (!name || !amt) { alert('Заполните имя и сумму'); return; }
+    const debts = getData('debts');
+    debts.push({
+      id: Date.now(),
+      dir: debtDir,
+      name,
+      amount: amt,
+      due: document.getElementById('debt-due').value,
+      note: document.getElementById('debt-note').value,
+      done: false,
+    });
+    setData('debts', debts);
+  } else if (modalType === 'client') {
+    const name = document.getElementById('cl-name').value.trim();
+    if (!name) { alert('Введите имя клиента'); return; }
+    const clients = getData('clients');
+    clients.push({
+      id: Date.now(),
+      name,
+      phone: document.getElementById('cl-phone').value,
+      work: document.getElementById('cl-work').value,
+      workDesc: document.getElementById('cl-work-desc').value,
+      callDate: document.getElementById('cl-call-date').value,
+      callTime: document.getElementById('cl-call-time').value,
+      arriveDate: document.getElementById('cl-arrive-date').value,
+      arriveTime: document.getElementById('cl-arrive-time').value,
+      sum: parseFloat(document.getElementById('cl-sum').value) || 0,
+      address: document.getElementById('cl-address').value,
+      status: 'new',
+    });
+    setData('clients', clients);
+  }
+  closeModal('modal-add');
+  renderPage(currentPage);
+  if (currentPage !== 'home') renderHome();
+}
+
+// ─── FORMAT ───────────────────────────────────────────────
+function fmt(n) {
+  return Math.round(n).toLocaleString('ru-RU');
+}
+function fmtDate(d) {
+  if (!d) return '';
+  const [y,m,day] = d.split('-');
+  const months = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+  return `${parseInt(day)} ${months[parseInt(m)-1]}`;
+}
+function initials(name) {
+  return name.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();
+}
+
+// ─── RENDER HOME ──────────────────────────────────────────
+function renderHome() {
+  const ops = getData('operations');
+  const debts = getData('debts');
+  const now = new Date();
+  const month = now.getMonth(); const year = now.getFullYear();
+
+  const monthOps = ops.filter(o => {
+    if (!o.date) return false;
+    const d = new Date(o.date);
+    return d.getMonth() === month && d.getFullYear() === year;
+  });
+
+  const totalIncome = monthOps.filter(o=>o.type==='income').reduce((s,o)=>s+o.amount,0);
+  const totalExpense = monthOps.filter(o=>o.type==='expense').reduce((s,o)=>s+o.amount,0);
+  const balance = totalIncome - totalExpense;
+
+  document.getElementById('home-balance').textContent = fmt(balance) + ' сум';
+  document.getElementById('home-income').textContent = fmt(totalIncome) + ' сум';
+  document.getElementById('home-expense').textContent = fmt(totalExpense) + ' сум';
+
+  const owedTotal = debts.filter(d=>!d.done && d.dir==='owed').reduce((s,d)=>s+d.amount,0);
+  const ioweTotal = debts.filter(d=>!d.done && d.dir==='iowe').reduce((s,d)=>s+d.amount,0);
+  const plannedTotal = monthOps.filter(o=>o.type==='expense'&&o.expType==='planned').reduce((s,o)=>s+o.amount,0);
+  const unplannedTotal = monthOps.filter(o=>o.type==='expense'&&o.expType==='unplanned').reduce((s,o)=>s+o.amount,0);
+
+  document.getElementById('stat-owed').textContent = fmt(owedTotal) + ' сум';
+  document.getElementById('stat-iowe').textContent = fmt(ioweTotal) + ' сум';
+  document.getElementById('stat-planned').textContent = fmt(plannedTotal) + ' сум';
+  document.getElementById('stat-unplanned').textContent = fmt(unplannedTotal) + ' сум';
+
+  renderDonut(monthOps, totalExpense);
+  renderReminders(debts);
+
+  const recent = [...ops].reverse().slice(0,6);
+  const el = document.getElementById('recent-list');
+  if (!recent.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">📊</div><div class="empty-text">Нет операций. Нажмите + чтобы добавить</div></div>'; return; }
+  el.innerHTML = recent.map(o => renderExpItem(o)).join('');
+}
+
+// ─── DONUT ────────────────────────────────────────────────
+function renderDonut(ops, total) {
+  const cats = {};
+  ops.filter(o=>o.type==='expense').forEach(o => {
+    cats[o.category] = (cats[o.category]||0) + o.amount;
+  });
+  const colors = ['#00c9a7','#4fc3f7','#ffb347','#ff5757','#a78bfa','#f06292','#81c784'];
+  const entries = Object.entries(cats).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const circ = 2 * Math.PI * 35;
+  let offset = 0;
+  let circles = '';
+  let legend = '';
+
+  if (!entries.length || total === 0) {
+    document.getElementById('donut-svg').innerHTML = `
+      <circle cx="45" cy="45" r="35" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="13"/>
+      <text x="45" y="41" text-anchor="middle" font-size="11" fill="#e8f4f8" font-weight="700" font-family="Nunito">0</text>
+      <text x="45" y="53" text-anchor="middle" font-size="9" fill="#8aaabb" font-family="Nunito">сум</text>`;
+    document.getElementById('donut-legend').innerHTML = '<div class="legend-item"><div class="legend-dot" style="background:#00c9a7"></div>Нет расходов</div>';
+    return;
+  }
+
+  entries.forEach(([cat, amt], i) => {
+    const frac = amt / total;
+    const dash = frac * circ;
+    const gap = circ - dash;
+    circles += `<circle cx="45" cy="45" r="35" fill="none" stroke="${colors[i%colors.length]}" stroke-width="13" stroke-dasharray="${dash.toFixed(1)} ${gap.toFixed(1)}" stroke-dashoffset="${(-offset).toFixed(1)}" stroke-linecap="butt"/>`;
+    offset += dash;
+    const pct = Math.round(frac * 100);
+    legend += `<div class="legend-item"><div class="legend-dot" style="background:${colors[i%colors.length]}"></div>${cat}<span class="legend-pct">${pct}%</span></div>`;
+  });
+
+  document.getElementById('donut-svg').innerHTML = circles + `
+    <text x="45" y="41" text-anchor="middle" font-size="10" fill="#e8f4f8" font-weight="700" font-family="Nunito">${fmt(total/1000)}K</text>
+    <text x="45" y="53" text-anchor="middle" font-size="9" fill="#8aaabb" font-family="Nunito">сум</text>`;
+  document.getElementById('donut-legend').innerHTML = legend;
+}
+
+// ─── REMINDERS ────────────────────────────────────────────
+function renderReminders(debts) {
+  const zone = document.getElementById('reminder-zone');
+  const today = new Date(); today.setHours(0,0,0,0);
+  const soon = debts.filter(d => {
+    if (d.done || !d.due) return false;
+    const due = new Date(d.due); due.setHours(0,0,0,0);
+    const diff = (due - today) / 86400000;
+    return diff >= 0 && diff <= 3;
+  });
+  if (!soon.length) { zone.innerHTML = ''; return; }
+  zone.innerHTML = soon.map(d => {
+    const due = new Date(d.due); due.setHours(0,0,0,0);
+    const diff = Math.round((due - today) / 86400000);
+    const who = d.dir === 'iowe' ? `Вы должны ${d.name}` : `${d.name} должен вам`;
+    const when = diff === 0 ? 'Сегодня!' : diff === 1 ? 'Завтра' : `Через ${diff} дня`;
+    return `<div class="reminder">⏰ ${when} — ${who} · ${fmt(d.amount)} сум</div>`;
+  }).join('');
+}
+
+// ─── RENDER EXP ITEM ──────────────────────────────────────
+const catIcons = {
+  'Продукты':'🛒','Транспорт':'🚌','Коммунальные':'💡','Развлечения':'🎬',
+  'Одежда':'👕','Здоровье':'💊','Образование':'📚','Ресторан':'🍽','Прочее':'📦'
+};
+const catColors = {
+  'Продукты':'rgba(0,201,167,0.15)','Транспорт':'rgba(79,195,247,0.15)',
+  'Коммунальные':'rgba(255,179,71,0.15)','Развлечения':'rgba(167,139,250,0.15)',
+  'Одежда':'rgba(240,98,146,0.15)','Здоровье':'rgba(255,87,87,0.15)',
+  'Образование':'rgba(79,195,247,0.15)','Ресторан':'rgba(255,179,71,0.15)','Прочее':'rgba(129,199,132,0.15)'
+};
+
+function renderExpItem(o) {
+  if (o.type === 'income') {
+    return `<div class="exp-item">
+      <div class="exp-icon" style="background:rgba(0,201,167,0.15);font-size:16px">💰</div>
+      <div class="exp-info">
+        <div class="exp-name">${o.desc || 'Доход'}</div>
+        <div class="exp-meta"><span class="exp-date">${fmtDate(o.date)}</span><span class="badge badge-plan">Доход</span></div>
+      </div>
+      <div class="income-amount">+${fmt(o.amount)}</div>
+    </div>`;
+  }
+  const icon = catIcons[o.category] || '📦';
+  const bg = catColors[o.category] || 'rgba(255,255,255,0.05)';
+  const planBadge = o.expType === 'planned'
+    ? '<span class="badge badge-plan">Плановый</span>'
+    : '<span class="badge badge-unplan">Внеплановый</span>';
+  const payBadge = o.payType === 'cash'
+    ? '<span class="badge badge-cash">Наличные</span>'
+    : '<span class="badge badge-card">Пластик</span>';
+  return `<div class="exp-item">
+    <div class="exp-icon" style="background:${bg};font-size:16px">${icon}</div>
+    <div class="exp-info">
+      <div class="exp-name">${o.desc || o.category}</div>
+      <div class="exp-meta"><span class="exp-date">${fmtDate(o.date)}</span>${planBadge}${payBadge}</div>
+    </div>
+    <div>
+      <div class="exp-amount">−${fmt(o.amount)}</div>
+    </div>
+  </div>`;
+}
+
+// ─── RENDER DEBTS ─────────────────────────────────────────
+function renderDebts() {
+  const debts = getData('debts');
+  const active = debts.filter(d=>!d.done);
+  const owedTotal = active.filter(d=>d.dir==='owed').reduce((s,d)=>s+d.amount,0);
+  const ioweTotal = active.filter(d=>d.dir==='iowe').reduce((s,d)=>s+d.amount,0);
+  document.getElementById('debts-owed-total').textContent = fmt(owedTotal);
+  document.getElementById('debts-iowe-total').textContent = fmt(ioweTotal);
+
+  const el = document.getElementById('debts-list');
+  if (!active.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">🤝</div><div class="empty-text">Нет активных долгов</div></div>'; return; }
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  el.innerHTML = active.map(d => {
+    const due = new Date(d.due); due.setHours(0,0,0,0);
+    const diff = Math.round((due - today)/86400000);
+    const overdue = diff < 0;
+    const tagCls = d.dir === 'iowe' ? 'tag-r' : 'tag-g';
+    const tagText = d.dir === 'iowe' ? 'Я должен' : 'Мне должны';
+    const amtColor = d.dir === 'iowe' ? 'var(--red)' : 'var(--green)';
+    const dueTxt = overdue ? `Просрочено на ${Math.abs(diff)} дн.` : diff === 0 ? 'Срок сегодня!' : `Срок: ${fmtDate(d.due)}`;
+    return `<div class="debt-item">
+      <div>
+        <div class="debt-name">${d.name}</div>
+        <div class="debt-date" style="color:${overdue?'var(--red)':'var(--text3)'}">${dueTxt}${d.note?' · '+d.note:''}</div>
+      </div>
+      <div class="debt-right">
+        <div class="debt-tag ${tagCls}">${tagText}</div>
+        <div class="debt-amount" style="color:${amtColor}">${fmt(d.amount)} сум</div>
+        <button class="delete-btn" onclick="markDebtDone(${d.id})">✓ Закрыть</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function markDebtDone(id) {
+  const debts = getData('debts');
+  const d = debts.find(d=>d.id===id);
+  if (d) d.done = true;
+  setData('debts', debts);
+  renderDebts();
+  renderHome();
+}
+
+// ─── RENDER EXPENSES ──────────────────────────────────────
+function filterExp(f, btn) {
+  expFilter = f;
+  document.querySelectorAll('#page-expenses .tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderExpenses();
+}
+function renderExpenses() {
+  const ops = getData('operations');
+  let filtered = ops;
+  if (expFilter === 'income') filtered = ops.filter(o=>o.type==='income');
+  else if (expFilter === 'planned') filtered = ops.filter(o=>o.type==='expense'&&o.expType==='planned');
+  else if (expFilter === 'unplanned') filtered = ops.filter(o=>o.type==='expense'&&o.expType==='unplanned');
+
+  const total = filtered.reduce((s,o)=>s+(o.type==='income'?o.amount:-o.amount),0);
+  document.getElementById('exp-page-total').textContent = fmt(total) + ' сум';
+
+  const el = document.getElementById('exp-list');
+  if (!filtered.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">💳</div><div class="empty-text">Нет операций</div></div>'; return; }
+  el.innerHTML = [...filtered].reverse().map(o => renderExpItem(o)).join('');
+}
+
+// ─── RENDER CLIENTS ───────────────────────────────────────
+function filterClients(f, btn) {
+  clientFilter = f;
+  document.querySelectorAll('#page-clients .tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderClients();
+}
+function setClientStatus(id, status) {
+  const clients = getData('clients');
+  const c = clients.find(c=>c.id===id);
+  if (c) c.status = status;
+  setData('clients', clients);
+  renderClients();
+}
+function deleteClient(id) {
+  if (!confirm('Удалить запись?')) return;
+  const clients = getData('clients').filter(c=>c.id!==id);
+  setData('clients', clients);
+  renderClients();
+}
+function renderClients() {
+  const clients = getData('clients');
+  const done = clients.filter(c=>c.status==='done');
+  const revenue = done.reduce((s,c)=>s+c.sum,0);
+  document.getElementById('clients-count').textContent = clients.length;
+  document.getElementById('clients-done').textContent = done.length;
+  document.getElementById('clients-revenue').textContent = fmt(revenue);
+
+  let filtered = clients;
+  if (clientFilter === 'new') filtered = clients.filter(c=>c.status==='new');
+  else if (clientFilter === 'way') filtered = clients.filter(c=>c.status==='way');
+  else if (clientFilter === 'done') filtered = clients.filter(c=>c.status==='done');
+
+  const el = document.getElementById('clients-list');
+  if (!filtered.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">🔧</div><div class="empty-text">Нет клиентов в этой категории</div></div>'; return; }
+
+  el.innerHTML = [...filtered].reverse().map(c => {
+    const statusMap = { new: ['Новая','s-new'], way: ['В пути','s-way'], done: ['Выполнено','s-done'] };
+    const [stText, stClass] = statusMap[c.status] || ['Новая','s-new'];
+    const nextStatus = c.status === 'new' ? 'way' : c.status === 'way' ? 'done' : null;
+    const nextLabel = c.status === 'new' ? '→ В пути' : c.status === 'way' ? '✓ Готово' : null;
+    return `<div class="client-item">
+      <div class="client-top">
+        <div class="avatar">${initials(c.name)}</div>
+        <div class="client-info">
+          <div class="client-name">${c.name}</div>
+          <div class="client-phone">${c.phone||'—'}</div>
+        </div>
+        <div class="client-right">
+          <div class="client-date">${fmtDate(c.callDate)}</div>
+          <div class="status-badge ${stClass}">${stText}</div>
+        </div>
+      </div>
+      <div class="client-tags">
+        <span class="ctag ct-work">🔧 ${c.work}</span>
+        ${c.callTime?`<span class="ctag ct-call">📞 ${c.callDate?fmtDate(c.callDate):''} ${c.callTime}</span>`:''}
+        ${c.arriveTime?`<span class="ctag ct-arrive">🏠 ${c.arriveDate?fmtDate(c.arriveDate):''} ${c.arriveTime}</span>`:''}
+        ${c.address?`<span class="ctag" style="background:rgba(255,255,255,0.07);color:var(--text2)">📍 ${c.address}</span>`:''}
+        ${c.workDesc?`<span class="ctag" style="background:rgba(255,255,255,0.05);color:var(--text3)">${c.workDesc}</span>`:''}
+      </div>
+      ${c.sum?`<div class="client-sum">${fmt(c.sum)} сум</div>`:''}
+      <div style="display:flex;gap:7px;margin-top:8px">
+        ${nextStatus?`<button class="btn-primary" style="padding:7px;font-size:12px;flex:1" onclick="setClientStatus(${c.id},'${nextStatus}')">${nextLabel}</button>`:''}
+        <button class="delete-btn" style="flex:0;padding:7px 10px" onclick="deleteClient(${c.id})">Удалить</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── SETTINGS ─────────────────────────────────────────────
+function renderSettings() {
+  const ops = getData('operations');
+  const clients = getData('clients');
+  const debts = getData('debts');
+  document.getElementById('stats-ops').textContent = ops.length;
+  document.getElementById('stats-clients').textContent = clients.length;
+  document.getElementById('stats-debts').textContent = debts.filter(d=>!d.done).length;
+  renderMonthlyChart(ops);
+}
+
+function renderMonthlyChart(ops) {
+  const months = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
+  const now = new Date();
+  const data = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const m = d.getMonth(); const y = d.getFullYear();
+    const monthOps = ops.filter(o => {
+      if (!o.date) return false;
+      const od = new Date(o.date);
+      return od.getMonth() === m && od.getFullYear() === y;
+    });
+    data.push({
+      label: months[m],
+      income: monthOps.filter(o=>o.type==='income').reduce((s,o)=>s+o.amount,0),
+      expense: monthOps.filter(o=>o.type==='expense').reduce((s,o)=>s+o.amount,0),
+    });
+  }
+  const maxVal = Math.max(...data.map(d=>Math.max(d.income,d.expense)), 1);
+  const el = document.getElementById('monthly-chart');
+  el.innerHTML = data.map(d => {
+    const ih = Math.round((d.income/maxVal)*68);
+    const eh = Math.round((d.expense/maxVal)*68);
+    return `<div class="bar-col">
+      <div style="display:flex;gap:2px;align-items:flex-end;height:70px">
+        <div class="bar-fill" style="background:var(--green);height:${ih}px;width:10px;min-height:2px;border-radius:3px 3px 0 0"></div>
+        <div class="bar-fill" style="background:var(--red);height:${eh}px;width:10px;min-height:2px;border-radius:3px 3px 0 0"></div>
+      </div>
+      <div class="bar-lbl">${d.label}</div>
+    </div>`;
+  }).join('');
+}
+
+// ─── INIT ─────────────────────────────────────────────────
+renderHome();
+</script>
+</body>
+</html>
