@@ -290,6 +290,7 @@ body {
   z-index: 200;
   align-items: flex-end;
   justify-content: center;
+  -webkit-overflow-scrolling: touch;
 }
 .modal-overlay.open { display: flex; }
 .modal {
@@ -331,10 +332,12 @@ body {
   border-radius: var(--radius-sm);
   color: var(--text);
   font-family: 'Nunito', sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   padding: 10px 12px;
   outline: none;
   transition: border-color 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
 }
 .form-input:focus, .form-select:focus, .form-textarea:focus {
   border-color: var(--accent);
@@ -629,7 +632,7 @@ body {
 </nav>
 
 <!-- FAB -->
-<button class="fab" id="fab-btn" onclick="openAddModal()">+</button>
+<a class="fab" id="fab-btn" href="javascript:void(0)" ontouchend="openAddModal()" onclick="openAddModal()">+</a>
 
 <!-- MODAL: ADD OPERATION -->
 <div class="modal-overlay" id="modal-add">
@@ -847,7 +850,7 @@ function clearForm() {
 
 function setModalType(type, btn) {
   modalType = type;
-  document.querySelectorAll('#modal-add .toggle-btn').slice(0,4).forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#modal-add .toggle-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   ['fields-expense','fields-debt','fields-client'].forEach(id => {
     document.getElementById(id).style.display = 'none';
@@ -1263,6 +1266,16 @@ function renderMonthlyChart(ops) {
     </div>`;
   }).join('');
 }
+
+// Touch fix for Samsung Internet
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('button, .fab, .nav-btn, .toggle-btn, .tab-btn, .btn-primary').forEach(function(el) {
+    el.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      el.click();
+    });
+  });
+});
 
 // ─── INIT ─────────────────────────────────────────────────
 renderHome();
