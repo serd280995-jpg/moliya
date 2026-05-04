@@ -484,11 +484,20 @@ body {
 <!-- PAGE: HOME -->
 <div id="page-home" class="page active">
   <div class="header">
-    <div class="header-label" id="home-period">Май 2026 · Баланс</div>
-    <div class="header-balance" id="home-balance">0 сум</div>
-    <div class="header-chips">
-      <div class="chip chip-g">↑ <span id="home-income">0</span></div>
-      <div class="chip chip-r">↓ <span id="home-expense">0</span></div>
+    <div class="header-label" id="home-period">Май 2026</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div style="background:rgba(0,201,167,0.12);border-radius:10px;padding:10px">
+        <div style="font-size:11px;color:#00c9a7;margin-bottom:3px">↑ Доход</div>
+        <div style="font-size:17px;font-weight:800;color:#00c9a7" id="home-income">0 сум</div>
+      </div>
+      <div style="background:rgba(255,87,87,0.12);border-radius:10px;padding:10px">
+        <div style="font-size:11px;color:#ff5757;margin-bottom:3px">↓ Расход</div>
+        <div style="font-size:17px;font-weight:800;color:#ff5757" id="home-expense">0 сум</div>
+      </div>
+    </div>
+    <div style="background:rgba(255,255,255,0.07);border-radius:10px;padding:10px;display:flex;justify-content:space-between;align-items:center">
+      <div style="font-size:12px;color:var(--text2)">💰 На счету (баланс)</div>
+      <div style="font-size:18px;font-weight:800" id="home-balance">0 сум</div>
     </div>
   </div>
 
@@ -1057,15 +1066,31 @@ const catColors = {
   'Образование':'rgba(79,195,247,0.15)','Ресторан':'rgba(255,179,71,0.15)','Прочее':'rgba(129,199,132,0.15)'
 };
 
-function renderExpItem(o) {
+function deleteOp(id) {
+  if (!confirm('Удалить запись?')) return;
+  const ops = getData('operations').filter(o => o.id !== id);
+  setData('operations', ops);
+  renderPage(currentPage);
+  renderHome();
+}
+
+function renderExpItem(o, withActions) {
+  const actionBtns = withActions ? `
+    <div style="display:flex;gap:6px;margin-top:7px">
+      <button onclick="deleteOp(${o.id})" style="flex:1;background:rgba(255,87,87,0.1);color:#ff5757;border:none;border-radius:6px;padding:6px;font-size:12px;font-family:Nunito,sans-serif;font-weight:700;cursor:pointer">🗑 Удалить</button>
+    </div>` : '';
+
   if (o.type === 'income') {
-    return `<div class="exp-item">
-      <div class="exp-icon" style="background:rgba(0,201,167,0.15);font-size:16px">💰</div>
-      <div class="exp-info">
-        <div class="exp-name">${o.desc || 'Доход'}</div>
-        <div class="exp-meta"><span class="exp-date">${fmtDate(o.date)}</span><span class="badge badge-plan">Доход</span></div>
+    return `<div class="exp-item" style="flex-direction:column;align-items:stretch">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="exp-icon" style="background:rgba(0,201,167,0.15);font-size:16px">💰</div>
+        <div class="exp-info">
+          <div class="exp-name">${o.desc || 'Доход'}</div>
+          <div class="exp-meta"><span class="exp-date">${fmtDate(o.date)}</span><span class="badge badge-plan">Доход</span></div>
+        </div>
+        <div class="income-amount">+${fmt(o.amount)}</div>
       </div>
-      <div class="income-amount">+${fmt(o.amount)}</div>
+      ${actionBtns}
     </div>`;
   }
   const icon = catIcons[o.category] || '📦';
@@ -1076,15 +1101,16 @@ function renderExpItem(o) {
   const payBadge = o.payType === 'cash'
     ? '<span class="badge badge-cash">Наличные</span>'
     : '<span class="badge badge-card">Пластик</span>';
-  return `<div class="exp-item">
-    <div class="exp-icon" style="background:${bg};font-size:16px">${icon}</div>
-    <div class="exp-info">
-      <div class="exp-name">${o.desc || o.category}</div>
-      <div class="exp-meta"><span class="exp-date">${fmtDate(o.date)}</span>${planBadge}${payBadge}</div>
-    </div>
-    <div>
+  return `<div class="exp-item" style="flex-direction:column;align-items:stretch">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="exp-icon" style="background:${bg};font-size:16px">${icon}</div>
+      <div class="exp-info">
+        <div class="exp-name">${o.desc || o.category}</div>
+        <div class="exp-meta"><span class="exp-date">${fmtDate(o.date)}</span>${planBadge}${payBadge}</div>
+      </div>
       <div class="exp-amount">−${fmt(o.amount)}</div>
     </div>
+    ${actionBtns}
   </div>`;
 }
 
@@ -1151,7 +1177,7 @@ function renderExpenses() {
 
   const el = document.getElementById('exp-list');
   if (!filtered.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">💳</div><div class="empty-text">Нет операций</div></div>'; return; }
-  el.innerHTML = [...filtered].reverse().map(o => renderExpItem(o)).join('');
+  el.innerHTML = [...filtered].reverse().map(o => renderExpItem(o, true)).join('');
 }
 
 // ─── RENDER CLIENTS ───────────────────────────────────────
